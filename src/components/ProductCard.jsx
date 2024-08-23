@@ -8,16 +8,15 @@ import {
   Text,
   useColorMode,
 } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 
-const ProductCard = ({ attributes }) => {
+const ProductCard = ({ attributes, id, btnName }) => {
+  const category = attributes?.category?.data?.attributes?.title;
   const { colorMode } = useColorMode();
 
   // Accessing the thumbnail URL
   const thumbnailUrl = attributes?.thumbnail?.data?.attributes?.url;
-  console.log("Thumbnail URL: ", thumbnailUrl);
-  console.log(`${import.meta.env.VITE_SERVER_URL}${thumbnailUrl}`);
 
   return (
     <Card bg={"none"} border={"1px solid #a8b5c8"}>
@@ -41,9 +40,12 @@ const ProductCard = ({ attributes }) => {
           <Text color="blue.600" fontSize="3xl" textAlign={"center"}>
             $ {attributes.price}
           </Text>
+          <Heading size="md" textAlign={"center"} p={2} rounded={"lg"}>
+            {category}
+          </Heading>
           <Button
             as={Link}
-            to={`/products/${attributes.id}`}
+            to={`/products/${id}`}
             bg={colorMode === "light" ? "#e6f3fd" : "#9f7aea"}
             color={colorMode !== "light" ? "#e6f3fd" : "#9f7aea"}
             size={"xl"}
@@ -59,7 +61,7 @@ const ProductCard = ({ attributes }) => {
             }}
             mt={6}
           >
-            View Details
+            {btnName}
           </Button>
         </Stack>
       </CardBody>
@@ -69,6 +71,8 @@ const ProductCard = ({ attributes }) => {
 
 // Define prop types
 ProductCard.propTypes = {
+  btnName: PropTypes.string.isRequired,
+  id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
   attributes: PropTypes.shape({
     thumbnail: PropTypes.shape({
       data: PropTypes.shape({
@@ -77,10 +81,16 @@ ProductCard.propTypes = {
         }),
       }),
     }),
+    category: PropTypes.shape({
+      data: PropTypes.shape({
+        attributes: PropTypes.shape({
+          title: PropTypes.string,
+        }),
+      }),
+    }),
     title: PropTypes.string,
     description: PropTypes.string,
     price: PropTypes.number,
-    id: PropTypes.string,
   }).isRequired,
 };
 
