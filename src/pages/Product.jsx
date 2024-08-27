@@ -1,16 +1,28 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { productsAxios } from "../config/axiosProducts";
 import ProductSkeleton from "../components/ProductSkeleton";
-import { Button, Flex, Grid } from "@chakra-ui/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  Flex,
+  Grid,
+  Heading,
+  Image,
+  Stack,
+  Text,
+  useColorMode,
+} from "@chakra-ui/react";
 import { useQuery } from "react-query";
-import ProductCard from "../components/ProductCard";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../app/features/cartSlice";
+
 const ProductPage = () => {
   const navigate = useNavigate();
-  const goBack = () => navigate(-1);
-  // Destructure productId from useParams
   const { productId } = useParams();
-  console.log("productId: ", productId);
+  const dispatch = useDispatch();
+  const { colorMode } = useColorMode();
 
   const fetchProduct = async () => {
     const { data } = await productsAxios.get(
@@ -19,7 +31,6 @@ const ProductPage = () => {
     return data;
   };
 
-  // Use the productId as part of the query key
   const {
     data: productData,
     isLoading,
@@ -27,51 +38,106 @@ const ProductPage = () => {
     error,
   } = useQuery(["product", productId], fetchProduct);
 
-  console.log("Product data:", productData);
+  const goBack = () => navigate(-1);
 
-  // Loading state
-  if (isLoading)
+  const addToCartHandler = () => {
+    if (productData) {
+      dispatch(addToCart(productData.data)); // Pass product data to cart
+    }
+  };
+  const all = useSelector((state) => state.cart.cartProducts);
+  console.log("all: ", all);
+
+  if (isLoading) {
     return (
-      <Grid justifyContent="center" alignItems={"center"} m={30}>
+      <Grid justifyContent="center" alignItems="center" m={30}>
         <ProductSkeleton />
       </Grid>
     );
+  }
 
-  // Error state
-  if (isError) return <div>{error.message}</div>;
+  if (isError) {
+    return <div>{error.message}</div>;
+  }
 
-  // Destructure product attributes from the response
-  const product = productData?.data?.attributes;
+  if (!productData) {
+    return <div>Product not found</div>;
+  }
 
-  // Render the product card
+  // Destructuring the data object
+  const { attributes } = productData.data;
+  const { title, description, price, category, thumbnail } = attributes;
+
+  const thumbnailUrl = thumbnail?.data?.attributes?.url
+    ? `${import.meta.env.VITE_SERVER_URL}${thumbnail.data.attributes.url}`
+    : "";
+
   return (
     <Flex
       justifyContent="center"
-      alignItems={"center"}
-      flexDirection={"column"}
-      margin={"auto"}
+      alignItems="center"
+      flexDirection="column"
+      margin="auto"
+      h={"90vh"}
     >
       <Button
         onClick={goBack}
         as={Flex}
         justifyContent="center"
-        alignItems={"center"}
+        alignItems="center"
         gap={2}
-        cursor={"pointer"}
+        cursor="pointer"
       >
         <IoMdArrowRoundBack />
-        goBack
+        Go Back
       </Button>
-      <Flex justifyContent="center" alignItems={"center"} gap={6} m={30}>
-        {product ? (
-          <ProductCard
-            attributes={product}
-            id={productId}
-            btnName={"Add To Cart"}
-          />
-        ) : (
-          <div>No product found</div>
-        )}
+      <Flex justifyContent="center" alignItems="center" gap={6} m={30}>
+        <Card bg="none" border="1px solid #a8b5c8" w={"300px"}>
+          <CardBody>
+            <Image
+              src={thumbnailUrl}
+              alt={title || "Product Image"}
+              borderRadius="50%"
+              w="200px"
+              h="200px"
+              mx="auto"
+              objectFit="cover"
+            />
+            <Stack mt="6" spacing="3">
+              <Heading size="md" textAlign="center" p={2} rounded="lg">
+                {title}
+              </Heading>
+              <Text textAlign="center" fontSize="sm">
+                {description}
+              </Text>
+              <Text color="blue.600" fontSize="3xl" textAlign="center">
+                $ {price}
+              </Text>
+              <Heading size="md" textAlign="center" p={2} rounded="lg">
+                {category?.data?.attributes?.title || "Unknown Category"}
+              </Heading>
+              <Button
+                bg={colorMode === "light" ? "#e6f3fd" : "#9f7aea"}
+                color={colorMode !== "light" ? "#e6f3fd" : "#9f7aea"}
+                size="xl"
+                variant="outline"
+                border="none"
+                py={5}
+                overflow="hidden"
+                w="full"
+                _hover={{
+                  bg: colorMode !== "light" ? "#e6f3fd" : "#9f7aea",
+                  color: colorMode === "light" ? "#e6f3fd" : "#9f7aea",
+                  border: "transparent",
+                }}
+                mt={6}
+                onClick={addToCartHandler}
+              >
+                Add to Cart
+              </Button>
+            </Stack>
+          </CardBody>
+        </Card>
       </Flex>
     </Flex>
   );

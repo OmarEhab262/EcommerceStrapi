@@ -9,6 +9,7 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import PropTypes from "prop-types";
+
 import { Link } from "react-router-dom";
 
 const ProductCard = ({ attributes, id, btnName }) => {
@@ -44,7 +45,7 @@ const ProductCard = ({ attributes, id, btnName }) => {
             {category}
           </Heading>
           <Button
-            as={Link}
+            as={btnName === "Add To Cart" ? Button : Link}
             to={`/products/${id}`}
             bg={colorMode === "light" ? "#e6f3fd" : "#9f7aea"}
             color={colorMode !== "light" ? "#e6f3fd" : "#9f7aea"}
