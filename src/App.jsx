@@ -9,6 +9,9 @@ import AboutPage from "./pages/About";
 import LoginPage from "./pages/Login";
 import ProductPage from "./pages/Product";
 import ProductsPage from "./pages/Products";
+import AdminDashboard from "./pages/dashboard";
+import DashboardLayout from "./pages/dashboard/DashboardLayout";
+import DashboardProducts from "./pages/dashboard/DashboardProducts";
 
 function App() {
   return (
@@ -48,8 +51,6 @@ function App() {
               </PrivateRoute>
             }
           />
-
-          {/* Protected routes */}
           <Route
             path="/home"
             element={
@@ -59,6 +60,13 @@ function App() {
             }
           />
         </Route>
+
+        <Route path="/dashboard" element={<DashboardLayout />}>
+          <Route index element={<AdminDashboard />} />
+          <Route path="products" element={<DashboardProducts />} />
+          <Route path="categories" element={<h1>categories</h1>} />
+        </Route>
+
         <Route path="/login" element={<LoginPage />} />
       </Routes>
       <ToastContainer

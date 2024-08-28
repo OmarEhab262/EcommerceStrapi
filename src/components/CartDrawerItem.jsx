@@ -11,9 +11,7 @@ const CartDrawerItem = ({ id, attributes, quantity }) => {
     <Box key={id} mb={4}>
       <Flex alignItems="center" justifyContent={"space-around"} mb={3} py={2}>
         <Image
-          src={`${import.meta.env.VITE_SERVER_URL}${
-            thumbnail.data.attributes.url
-          }`}
+          src={`${thumbnail.data.attributes.url}`}
           alt={`Thumbnail of ${title}`}
           w="90px"
           h="90px"

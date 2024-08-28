@@ -13,7 +13,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 const ProductCard = ({ attributes, id, btnName }) => {
-  const category = attributes?.category?.data?.attributes?.title;
+  //   const category = attributes?.category?.data?.attributes?.title;
   const { colorMode } = useColorMode();
 
   // Accessing the thumbnail URL
@@ -23,7 +23,7 @@ const ProductCard = ({ attributes, id, btnName }) => {
     <Card bg={"none"} border={"1px solid #a8b5c8"}>
       <CardBody>
         <Image
-          src={`${import.meta.env.VITE_SERVER_URL}${thumbnailUrl}`}
+          src={`${thumbnailUrl}`}
           alt={attributes.title || "Product Image"}
           borderRadius="50%"
           w={"200px"}
@@ -41,9 +41,7 @@ const ProductCard = ({ attributes, id, btnName }) => {
           <Text color="blue.600" fontSize="3xl" textAlign={"center"}>
             $ {attributes.price}
           </Text>
-          <Heading size="md" textAlign={"center"} p={2} rounded={"lg"}>
-            {category}
-          </Heading>
+
           <Button
             as={btnName === "Add To Cart" ? Button : Link}
             to={`/products/${id}`}

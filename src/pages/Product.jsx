@@ -66,10 +66,10 @@ const ProductPage = () => {
 
   // Destructuring the data object
   const { attributes } = productData.data;
-  const { title, description, price, category, thumbnail } = attributes;
+  const { title, description, price, thumbnail } = attributes;
 
   const thumbnailUrl = thumbnail?.data?.attributes?.url
-    ? `${import.meta.env.VITE_SERVER_URL}${thumbnail.data.attributes.url}`
+    ? `${thumbnail.data.attributes.url}`
     : "";
 
   return (
@@ -113,9 +113,7 @@ const ProductPage = () => {
               <Text color="blue.600" fontSize="3xl" textAlign="center">
                 $ {price}
               </Text>
-              <Heading size="md" textAlign="center" p={2} rounded="lg">
-                {category?.data?.attributes?.title || "Unknown Category"}
-              </Heading>
+
               <Button
                 bg={colorMode === "light" ? "#e6f3fd" : "#9f7aea"}
                 color={colorMode !== "light" ? "#e6f3fd" : "#9f7aea"}

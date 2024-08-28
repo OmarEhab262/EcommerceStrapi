@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { Provider } from "react-redux";
 import { store } from "./app/store.js";
+import InternetConnectionProvider from "./services/InternetConnectionServices .jsx";
 
 // Create a new QueryClient with specified options
 const queryClient = new QueryClient({
@@ -23,14 +24,16 @@ const container = document.getElementById("root");
 const root = createRoot(container);
 
 root.render(
-  <Provider store={store}>
-    <QueryClientProvider client={queryClient}>
-      <Router>
-        <ChakraProvider>
-          <App />
-        </ChakraProvider>
-      </Router>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
-  </Provider>
+  <QueryClientProvider client={queryClient}>
+    <Provider store={store}>
+      <InternetConnectionProvider>
+        <Router>
+          <ChakraProvider>
+            <App />
+          </ChakraProvider>
+        </Router>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </InternetConnectionProvider>
+    </Provider>
+  </QueryClientProvider>
 );
